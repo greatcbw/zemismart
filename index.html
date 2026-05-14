@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Zemismart">
+<meta name="theme-color" content="#1F3864">
+<title>Zemismart 견적 계산기</title>
+
+<!-- PWA Manifest (인라인) -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Zemismart+%EA%B2%AC%EC%A0%81+%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22short_name%22%3A%22Zemismart%22%2C%22description%22%3A%22%EC%8A%A4%EB%A7%88%ED%8A%B8+%EC%A0%84%EB%8F%99+%EB%A1%A4%EC%8A%A4%ED%81%AC%EB%A6%B0+%EB%8F%84%EB%A7%A4+%EA%B2%AC%EC%A0%81+%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4f8%22%2C%22theme_color%22%3A%22%231F3864%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg+xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27+viewBox%3D%270+0+512+512%27%253E%253Crect+width%3D%27512%27+height%3D%27512%27+rx%3D%2780%27+fill%3D%27%231F3864%27%2F%253E%253Ctext+x%3D%27256%27+y%3D%27340%27+font-size%3D%27280%27+text-anchor%3D%27middle%27%253E%25F0%259F%25AA%259F%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+
+<!-- Apple 홈화면 아이콘 -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%231F3864'/><text x='256' y='340' font-size='280' text-anchor='middle'>🪟</text></svg>">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    background: #f0f4f8;
+    color: #1a2a3a;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
+    color: white;
+    padding: 24px 20px 20px;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(31,56,100,0.3);
+  }
+  .header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.4; }
+  .header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+
+  .container { padding: 16px; max-width: 480px; margin: 0 auto; }
+
+  .card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #2E75B6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-title::before {
+    content: '';
+    display: block;
+    width: 4px;
+    height: 16px;
+    background: #2E75B6;
+    border-radius: 2px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .input-row { display: flex; gap: 10px; }
+  .input-row .field { flex: 1; }
+
+  input[type="number"] {
+    width: 100%;
+    height: 52px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    color: #1a2a3a;
+    background: #f8fafc;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    -webkit-appearance: none;
+  }
+  input[type="number"]:focus {
+    border-color: #2E75B6;
+    background: #EEF4FF;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8fafc;
+    height: 52px;
+  }
+  .qty-btn {
+    width: 52px;
+    height: 100%;
+    font-size: 24px;
+    font-weight: 300;
+    color: #2E75B6;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .qty-btn:active { background: #dbeafe; }
+  .qty-val {
+    flex: 1;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a2a3a;
+  }
+
+  .area-display {
+    background: linear-gradient(135deg, #EEF4FF, #dbeafe);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+  }
+  .area-display .label { font-size: 13px; color: #555; font-weight: 500; }
+  .area-display .value { font-size: 24px; font-weight: 800; color: #1F3864; }
+  .area-display .unit { font-size: 13px; color: #2E75B6; font-weight: 600; }
+
+  .result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item .name { font-size: 14px; color: #333; flex: 1; }
+  .result-item .sub { font-size: 11px; color: #999; margin-top: 2px; }
+  .result-item .amount { font-size: 17px; font-weight: 700; color: #1a2a3a; margin-left: 10px; }
+
+  .total-card {
+    background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
+    border-radius: 16px;
+    padding: 22px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 20px rgba(31,56,100,0.35);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .total-card .label { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.85); }
+  .total-card .amount { font-size: 30px; font-weight: 800; color: white; }
+
+  /* 앱 설치 배너 */
+  #installBanner {
+    display: none;
+    background: linear-gradient(135deg, #0f5132, #198754);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(25,135,84,0.3);
+    align-items: center;
+    gap: 14px;
+  }
+  #installBanner.show { display: flex; }
+  #installBanner .text { flex: 1; color: white; }
+  #installBanner .text strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  #installBanner .text span { font-size: 12px; opacity: 0.85; }
+  #installBtn {
+    background: white;
+    color: #198754;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  #installBtn:active { opacity: 0.8; }
+
+  .toggle-btn {
+    width: 100%;
+    background: white;
+    border: none;
+    border-radius: 16px;
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #2E75B6;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    transition: background 0.15s;
+  }
+  .toggle-btn:active { background: #f0f4f8; }
+  .toggle-icon { font-size: 18px; transition: transform 0.2s; }
+  .toggle-icon.open { transform: rotate(180deg); }
+
+  .price-table { display: none; }
+  .price-table.open { display: block; }
+  .price-table .card { margin-top: -8px; border-radius: 0 0 16px 16px; padding-top: 12px; }
+
+  .pt-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 9px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 13px;
+  }
+  .pt-row:last-child { border-bottom: none; }
+  .pt-row .range { color: #555; }
+  .pt-row .price { font-weight: 700; color: #2E75B6; }
+  .pt-row.highlight { background: #FFF9C4; border-radius: 6px; padding: 9px 8px; margin: 0 -8px; }
+
+  .note {
+    font-size: 11.5px;
+    color: #888;
+    text-align: center;
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🪟 Zemismart<br>스마트 전동 롤스크린 견적 계산기</h1>
+  <p>통화 단위 : USD · 국제 배송비 별도</p>
+</div>
+
+<div class="container">
+
+  <!-- 앱 설치 배너 -->
+  <div id="installBanner">
+    <div class="text">
+      <strong>📲 앱으로 설치하기</strong>
+      <span>홈화면에 추가하면 앱처럼 사용 가능</span>
+    </div>
+    <button id="installBtn" onclick="installApp()">설치</button>
+  </div>
+
+  <!-- 창문 크기 입력 -->
+  <div class="card">
+    <div class="card-title">창문 크기</div>
+    <div class="input-row">
+      <div class="field">
+        <label>가로 (m)</label>
+        <input type="number" id="width" value="1.5" min="0.1" step="0.1" inputmode="decimal" oninput="calc()">
+      </div>
+      <div class="field">
+        <label>세로 (m)</label>
+        <input type="number" id="height" value="1.0" min="0.1" step="0.1" inputmode="decimal" oninput="calc()">
+      </div>
+    </div>
+    <div class="area-display">
+      <span class="label">계산된 면적</span>
+      <span><span class="value" id="areaVal">1.50</span> <span class="unit">㎡</span></span>
+    </div>
+  </div>
+
+  <!-- 수량 입력 -->
+  <div class="card">
+    <div class="card-title">수량</div>
+    <div class="field">
+      <label>Zigbee 유선 모터 (25mm) ZM25Z — $39.00/대</label>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty('motor',-1)">−</button>
+        <span class="qty-val" id="motorVal">1</span>
+        <button class="qty-btn" onclick="changeQty('motor',1)">+</button>
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label>16채널 다이얼 리모컨 ZMR16 — $11.00/개</label>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty('remote',-1)">−</button>
+        <span class="qty-val" id="remoteVal">1</span>
+        <button class="qty-btn" onclick="changeQty('remote',1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 견적 금액 -->
+  <div class="card">
+    <div class="card-title">견적 금액</div>
+    <div class="result-item">
+      <div>
+        <div class="name">Zigbee 유선 모터 ZM25Z</div>
+        <div class="sub" id="motorSub">1대 × $39.00</div>
+      </div>
+      <div class="amount" id="motorAmt">$39.00</div>
+    </div>
+    <div class="result-item">
+      <div>
+        <div class="name">16채널 다이얼 리모컨 ZMR16</div>
+        <div class="sub" id="remoteSub">1개 × $11.00</div>
+      </div>
+      <div class="amount" id="remoteAmt">$11.00</div>
+    </div>
+    <div class="result-item">
+      <div>
+        <div class="name">블라인드 원단 (맞춤 제작)</div>
+        <div class="sub" id="fabricSub">1.50㎡ × $17.00/㎡</div>
+      </div>
+      <div class="amount" id="fabricAmt">$25.50</div>
+    </div>
+  </div>
+
+  <!-- 총합계 -->
+  <div class="total-card">
+    <span class="label">총 합계</span>
+    <span class="amount" id="totalAmt">$75.50</span>
+  </div>
+
+  <!-- 단가 참고표 -->
+  <button class="toggle-btn" onclick="toggleTable()">
+    <span>📋 원단 단가 참고표 (면적별)</span>
+    <span class="toggle-icon" id="toggleIcon">▼</span>
+  </button>
+  <div class="price-table" id="priceTable">
+    <div class="card">
+      <div id="priceRows"></div>
+      <p class="note" style="margin-top:10px;">※ 100% 암막 원단 + 알루미늄 상·하 레일 포함<br>면적이 클수록 ㎡당 단가 낮아짐</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const MOTOR_PRICE = 39;
+const REMOTE_PRICE = 11;
+
+const AREA_TIERS = [
+  { max: 1.0,      price: 18.00 },
+  { max: 1.5,      price: 17.00 },
+  { max: 2.0,      price: 16.00 },
+  { max: 2.5,      price: 15.50 },
+  { max: 3.0,      price: 15.00 },
+  { max: 3.5,      price: 14.50 },
+  { max: 4.0,      price: 14.00 },
+  { max: 4.5,      price: 13.50 },
+  { max: 5.0,      price: 13.00 },
+  { max: 5.5,      price: 12.80 },
+  { max: 6.0,      price: 12.50 },
+  { max: 6.5,      price: 12.30 },
+  { max: 7.0,      price: 12.00 },
+  { max: 7.5,      price: 11.80 },
+  { max: Infinity, price: 11.80 },
+];
+
+const TIER_LABELS = [
+  '~ 1.0㎡ 이하','1.0 ~ 1.5㎡','1.5 ~ 2.0㎡','2.0 ~ 2.5㎡',
+  '2.5 ~ 3.0㎡','3.0 ~ 3.5㎡','3.5 ~ 4.0㎡','4.0 ~ 4.5㎡',
+  '4.5 ~ 5.0㎡','5.0 ~ 5.5㎡','5.5 ~ 6.0㎡','6.0 ~ 6.5㎡',
+  '6.5 ~ 7.0㎡','7.0 ~ 7.5㎡','7.5㎡ 초과',
+];
+
+let motorQty = 1, remoteQty = 1;
+let deferredPrompt = null;
+
+// PWA 설치 프롬프트 캐치
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+
+// 설치 완료 후 배너 숨김
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('show');
+  deferredPrompt = null;
+});
+
+async function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('installBanner').classList.remove('show');
+  }
+  deferredPrompt = null;
+}
+
+// Service Worker 등록 (오프라인 지원)
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'zemismart-v1';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys =>
+        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      ));
+      self.clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+}
+
+function getUnitPrice(area) {
+  return AREA_TIERS.find(t => area <= t.max).price;
+}
+
+function fmt(n) {
+  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function calc() {
+  const w = parseFloat(document.getElementById('width').value) || 0;
+  const h = parseFloat(document.getElementById('height').value) || 0;
+  const area = w * h;
+  const unitPrice = getUnitPrice(area);
+
+  const motorAmt  = motorQty  * MOTOR_PRICE;
+  const remoteAmt = remoteQty * REMOTE_PRICE;
+  const fabricAmt = area * unitPrice;
+  const total = motorAmt + remoteAmt + fabricAmt;
+
+  document.getElementById('areaVal').textContent    = area.toFixed(2);
+  document.getElementById('motorSub').textContent   = motorQty  + '대 × ' + fmt(MOTOR_PRICE);
+  document.getElementById('motorAmt').textContent   = fmt(motorAmt);
+  document.getElementById('remoteSub').textContent  = remoteQty + '개 × ' + fmt(REMOTE_PRICE);
+  document.getElementById('remoteAmt').textContent  = fmt(remoteAmt);
+  document.getElementById('fabricSub').textContent  = area.toFixed(2) + '㎡ × ' + fmt(unitPrice) + '/㎡';
+  document.getElementById('fabricAmt').textContent  = fmt(fabricAmt);
+  document.getElementById('totalAmt').textContent   = fmt(total);
+
+  renderPriceTable(area);
+}
+
+function changeQty(type, delta) {
+  if (type === 'motor') {
+    motorQty = Math.max(1, motorQty + delta);
+    document.getElementById('motorVal').textContent = motorQty;
+  } else {
+    remoteQty = Math.max(1, remoteQty + delta);
+    document.getElementById('remoteVal').textContent = remoteQty;
+  }
+  calc();
+}
+
+function renderPriceTable(currentArea) {
+  const currentIdx = AREA_TIERS.findIndex(t => currentArea <= t.max);
+  const rows = AREA_TIERS.slice(0, 14).map((t, i) => {
+    const active = i === currentIdx;
+    return `<div class="pt-row${active ? ' highlight' : ''}">
+      <span class="range">${active ? '▶ ' : ''}${TIER_LABELS[i]}</span>
+      <span class="price">${fmt(t.price)}/㎡</span>
+    </div>`;
+  });
+  document.getElementById('priceRows').innerHTML = rows.join('');
+}
+
+function toggleTable() {
+  const table = document.getElementById('priceTable');
+  const icon  = document.getElementById('toggleIcon');
+  const open  = table.classList.toggle('open');
+  icon.classList.toggle('open', open);
+}
+
+calc();
+</script>
+</body>
+</html>
