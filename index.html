@@ -243,6 +243,76 @@
     margin-top: 6px;
     line-height: 1.6;
   }
+
+  /* 면적 경고 */
+  .area-warning {
+    display: none;
+    margin-top: 10px;
+    background: #fff0f0;
+    border: 1.5px solid #ffb3b3;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .area-warning.show { display: block; }
+  .area-warning .warn-red { color: #d32f2f; font-weight: 800; }
+
+  /* 마진율 + 제안가격 */
+  .margin-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+  }
+  .margin-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .margin-row label { font-size: 14px; color: #333; font-weight: 500; white-space: nowrap; }
+  .margin-input-wrap {
+    display: flex;
+    align-items: center;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8fafc;
+    height: 48px;
+    flex: 1;
+  }
+  .margin-input-wrap:focus-within { border-color: #2E75B6; background: #EEF4FF; }
+  .margin-input-wrap input {
+    flex: 1;
+    height: 100%;
+    border: none;
+    background: none;
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+    color: #1a2a3a;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .margin-input-wrap span {
+    padding-right: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2E75B6;
+  }
+  .suggest-row {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .suggest-row .label { font-size: 14px; font-weight: 600; color: #2e7d32; }
+  .suggest-row .sub { font-size: 11px; color: #558b2f; margin-top: 2px; }
+  .suggest-row .amount { font-size: 26px; font-weight: 800; color: #1b5e20; }
 </style>
 </head>
 <body>
@@ -279,6 +349,9 @@
     <div class="area-display">
       <span class="label">계산된 면적</span>
       <span><span class="value" id="areaVal">1.50</span> <span class="unit">㎡</span></span>
+    </div>
+    <div class="area-warning" id="areaWarning">
+      <span class="warn-red">경고!</span> 최대 면적(7.5㎡) 초과 재입력 바람
     </div>
   </div>
 
@@ -333,6 +406,24 @@
   <div class="total-card">
     <span class="label">총 합계</span>
     <span class="amount" id="totalAmt">$75.50</span>
+  </div>
+
+  <!-- 마진율 + 제안가격 -->
+  <div class="margin-card">
+    <div class="margin-row">
+      <label>마진율</label>
+      <div class="margin-input-wrap">
+        <input type="number" id="margin" value="25" min="0" max="99" step="1" inputmode="numeric" oninput="calc()">
+        <span>%</span>
+      </div>
+    </div>
+    <div class="suggest-row">
+      <div>
+        <div class="label">제안 가격</div>
+        <div class="sub" id="suggestSub">마진 25% 적용</div>
+      </div>
+      <div class="amount" id="suggestAmt">$94.38</div>
+    </div>
   </div>
 
   <!-- 단가 참고표 -->
@@ -438,12 +529,22 @@ function calc() {
   const w = parseFloat(document.getElementById('width').value) || 0;
   const h = parseFloat(document.getElementById('height').value) || 0;
   const area = w * h;
-  const unitPrice = getUnitPrice(area);
+  const margin = parseFloat(document.getElementById('margin').value) || 0;
 
+  // 면적 경고
+  const warning = document.getElementById('areaWarning');
+  if (area > 7.5) {
+    warning.classList.add('show');
+  } else {
+    warning.classList.remove('show');
+  }
+
+  const unitPrice = getUnitPrice(area);
   const motorAmt  = motorQty  * MOTOR_PRICE;
   const remoteAmt = remoteQty * REMOTE_PRICE;
   const fabricAmt = area * unitPrice;
   const total = motorAmt + remoteAmt + fabricAmt;
+  const suggest = total * (1 + margin / 100);
 
   document.getElementById('areaVal').textContent    = area.toFixed(2);
   document.getElementById('motorSub').textContent   = motorQty  + '대 × ' + fmt(MOTOR_PRICE);
@@ -453,16 +554,18 @@ function calc() {
   document.getElementById('fabricSub').textContent  = area.toFixed(2) + '㎡ × ' + fmt(unitPrice) + '/㎡';
   document.getElementById('fabricAmt').textContent  = fmt(fabricAmt);
   document.getElementById('totalAmt').textContent   = fmt(total);
+  document.getElementById('suggestSub').textContent = '마진 ' + margin + '% 적용';
+  document.getElementById('suggestAmt').textContent = fmt(suggest);
 
   renderPriceTable(area);
 }
 
 function changeQty(type, delta) {
   if (type === 'motor') {
-    motorQty = Math.max(1, motorQty + delta);
+    motorQty = Math.max(0, motorQty + delta);
     document.getElementById('motorVal').textContent = motorQty;
   } else {
-    remoteQty = Math.max(1, remoteQty + delta);
+    remoteQty = Math.max(0, remoteQty + delta);
     document.getElementById('remoteVal').textContent = remoteQty;
   }
   calc();
