@@ -21,43 +21,43 @@
     background: #f0f4f8;
     color: #1a2a3a;
     min-height: 100vh;
-    padding-bottom: 40px;
+    padding-bottom: 20px;
   }
 
   .header {
     background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
     color: white;
-    padding: 24px 20px 16px;
+    padding: 12px 16px 8px;
     text-align: center;
     box-shadow: 0 2px 12px rgba(31,56,100,0.3);
   }
-  .header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.4; }
-  .header p  { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+  .header h1 { font-size: 14px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.3; }
+  .header p  { font-size: 11px; opacity: 0.75; margin-top: 3px; }
 
   /* ── 통화/환율 바 ───────────────────────────────────── */
   .currency-bar {
     background: #1a2f55;
-    padding: 12px 16px;
-    border-radius: 16px;
-    margin-bottom: 14px;
+    padding: 8px 12px;
+    border-radius: 14px;
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
   }
   .cur-toggle {
     display: flex;
     background: rgba(255,255,255,0.12);
-    border-radius: 10px;
-    padding: 3px;
-    gap: 3px;
+    border-radius: 8px;
+    padding: 2px;
+    gap: 2px;
     flex-shrink: 0;
   }
   .cur-btn {
-    padding: 7px 12px;
+    padding: 5px 10px;
     border: none;
-    border-radius: 8px;
-    font-size: 13px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     background: transparent;
@@ -73,61 +73,61 @@
   .rate-wrap {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     flex: 1;
     justify-content: flex-end;
     min-width: 0;
   }
-  .rate-label { font-size: 12px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+  .rate-label { font-size: 11px; color: rgba(255,255,255,0.7); white-space: nowrap; }
   .rate-input {
-    width: 90px;
+    width: 80px;
     min-width: 0;
     flex-shrink: 1;
-    height: 36px;
+    height: 28px;
     border: 1.5px solid rgba(255,255,255,0.3);
-    border-radius: 8px;
+    border-radius: 7px;
     background: rgba(255,255,255,0.12);
     color: white;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 700;
     text-align: center;
     outline: none;
     -webkit-appearance: none;
   }
   .rate-input:focus { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.2); }
-  .rate-unit { font-size: 12px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+  .rate-unit { font-size: 11px; color: rgba(255,255,255,0.7); white-space: nowrap; }
 
   /* ── 공통 ────────────────────────────────────────────── */
-  .container { padding: 16px; max-width: 480px; margin: 0 auto; }
+  .container { padding: 10px 12px; max-width: 480px; margin: 0 auto; }
 
   .card {
     background: white;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }
   .card-title {
-    font-size: 13px; font-weight: 700; color: #2E75B6;
+    font-size: 11px; font-weight: 700; color: #2E75B6;
     text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
+    margin-bottom: 10px; display: flex; align-items: center; gap: 5px;
   }
   .card-title::before {
-    content: ''; display: block; width: 4px; height: 16px;
+    content: ''; display: block; width: 3px; height: 13px;
     background: #2E75B6; border-radius: 2px;
   }
 
-  .field { margin-bottom: 14px; }
+  .field { margin-bottom: 8px; }
   .field:last-child { margin-bottom: 0; }
-  .field label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 500; }
+  .field label { display: block; font-size: 11px; color: #666; margin-bottom: 4px; font-weight: 500; }
 
-  .input-row { display: flex; gap: 10px; }
+  .input-row { display: flex; gap: 8px; }
   .input-row .field { flex: 1; }
 
   input[type="number"] {
-    width: 100%; height: 52px;
-    border: 2px solid #e2e8f0; border-radius: 12px;
-    font-size: 22px; font-weight: 700; text-align: center;
+    width: 100%; height: 40px;
+    border: 2px solid #e2e8f0; border-radius: 10px;
+    font-size: 18px; font-weight: 700; text-align: center;
     color: #1a2a3a; background: #f8fafc; outline: none;
     transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
   }
@@ -135,116 +135,116 @@
 
   .qty-control {
     display: flex; align-items: center;
-    border: 2px solid #e2e8f0; border-radius: 12px;
-    overflow: hidden; background: #f8fafc; height: 52px;
+    border: 2px solid #e2e8f0; border-radius: 10px;
+    overflow: hidden; background: #f8fafc; height: 40px;
   }
   .qty-btn {
-    width: 52px; height: 100%; font-size: 24px; font-weight: 300;
+    width: 40px; height: 100%; font-size: 20px; font-weight: 300;
     color: #2E75B6; background: none; border: none; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0; transition: background 0.15s;
   }
   .qty-btn:active { background: #dbeafe; }
-  .qty-val { flex: 1; text-align: center; font-size: 22px; font-weight: 700; color: #1a2a3a; }
+  .qty-val { flex: 1; text-align: center; font-size: 18px; font-weight: 700; color: #1a2a3a; }
 
   .area-display {
     background: linear-gradient(135deg, #EEF4FF, #dbeafe);
-    border-radius: 12px; padding: 14px 16px;
-    display: flex; justify-content: space-between; align-items: center; margin-top: 14px;
+    border-radius: 10px; padding: 9px 12px;
+    display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
   }
-  .area-display .label { font-size: 13px; color: #555; font-weight: 500; }
-  .area-display .value { font-size: 24px; font-weight: 800; color: #1F3864; }
-  .area-display .unit  { font-size: 13px; color: #2E75B6; font-weight: 600; }
+  .area-display .label { font-size: 11px; color: #555; font-weight: 500; }
+  .area-display .value { font-size: 20px; font-weight: 800; color: #1F3864; }
+  .area-display .unit  { font-size: 11px; color: #2E75B6; font-weight: 600; }
 
   .area-warning {
-    display: none; margin-top: 10px;
+    display: none; margin-top: 7px;
     background: #fff0f0; border: 1.5px solid #ffb3b3;
-    border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.5;
+    border-radius: 8px; padding: 7px 12px; font-size: 12px; line-height: 1.4;
   }
   .area-warning.show { display: block; }
   .area-warning .warn-red { color: #d32f2f; font-weight: 800; }
 
   .result-item {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 13px 0; border-bottom: 1px solid #f0f0f0;
+    padding: 8px 0; border-bottom: 1px solid #f0f0f0;
   }
   .result-item:last-child { border-bottom: none; }
-  .result-item .name   { font-size: 14px; color: #333; flex: 1; }
-  .result-item .sub    { font-size: 11px; color: #999; margin-top: 2px; }
-  .result-item .amount { font-size: 17px; font-weight: 700; color: #1a2a3a; margin-left: 10px; }
+  .result-item .name   { font-size: 12px; color: #333; flex: 1; }
+  .result-item .sub    { font-size: 10px; color: #999; margin-top: 1px; }
+  .result-item .amount { font-size: 14px; font-weight: 700; color: #1a2a3a; margin-left: 8px; }
 
   .total-card {
     background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
-    border-radius: 16px; padding: 22px 20px; margin-bottom: 14px;
-    box-shadow: 0 4px 20px rgba(31,56,100,0.35);
+    border-radius: 14px; padding: 13px 16px; margin-bottom: 8px;
+    box-shadow: 0 4px 16px rgba(31,56,100,0.35);
     display: flex; justify-content: space-between; align-items: center;
   }
-  .total-card .label  { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.85); }
-  .total-card .amount { font-size: 30px; font-weight: 800; color: white; }
+  .total-card .label  { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); }
+  .total-card .amount { font-size: 24px; font-weight: 800; color: white; }
 
   /* 앱 설치 배너 */
   #installBanner {
     display: none; background: linear-gradient(135deg, #0f5132, #198754);
-    border-radius: 16px; padding: 16px 20px; margin-bottom: 14px;
-    box-shadow: 0 4px 16px rgba(25,135,84,0.3); align-items: center; gap: 14px;
+    border-radius: 14px; padding: 10px 14px; margin-bottom: 8px;
+    box-shadow: 0 4px 16px rgba(25,135,84,0.3); align-items: center; gap: 10px;
   }
   #installBanner.show { display: flex; }
   #installBanner .text { flex: 1; color: white; }
-  #installBanner .text strong { display: block; font-size: 14px; margin-bottom: 2px; }
-  #installBanner .text span   { font-size: 12px; opacity: 0.85; }
+  #installBanner .text strong { display: block; font-size: 12px; margin-bottom: 1px; }
+  #installBanner .text span   { font-size: 11px; opacity: 0.85; }
   #installBtn {
-    background: white; color: #198754; border: none; border-radius: 10px;
-    padding: 10px 16px; font-size: 13px; font-weight: 700;
+    background: white; color: #198754; border: none; border-radius: 8px;
+    padding: 7px 12px; font-size: 12px; font-weight: 700;
     cursor: pointer; white-space: nowrap; flex-shrink: 0;
   }
   #installBtn:active { opacity: 0.8; }
 
   /* 마진율 + 제안가격 */
-  .margin-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
-  .margin-row  { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-  .margin-row label { font-size: 14px; color: #333; font-weight: 500; white-space: nowrap; }
+  .margin-card { background: white; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .margin-row  { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .margin-row label { font-size: 12px; color: #333; font-weight: 500; white-space: nowrap; }
   .margin-input-wrap {
     display: flex; align-items: center; border: 2px solid #e2e8f0;
-    border-radius: 12px; overflow: hidden; background: #f8fafc; height: 48px; flex: 1;
+    border-radius: 10px; overflow: hidden; background: #f8fafc; height: 40px; flex: 1;
   }
   .margin-input-wrap:focus-within { border-color: #2E75B6; background: #EEF4FF; }
   .margin-input-wrap input {
     flex: 1; height: 100%; border: none; background: none;
-    font-size: 20px; font-weight: 700; text-align: center;
+    font-size: 17px; font-weight: 700; text-align: center;
     color: #1a2a3a; outline: none; -webkit-appearance: none;
   }
-  .margin-input-wrap span { padding-right: 12px; font-size: 16px; font-weight: 600; color: #2E75B6; }
+  .margin-input-wrap span { padding-right: 10px; font-size: 14px; font-weight: 600; color: #2E75B6; }
 
   .suggest-row {
     background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    border-radius: 12px; padding: 16px;
+    border-radius: 10px; padding: 10px 12px;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .suggest-row .label  { font-size: 14px; font-weight: 600; color: #2e7d32; }
-  .suggest-row .sub    { font-size: 11px; color: #558b2f; margin-top: 2px; }
-  .suggest-row .amount { font-size: 26px; font-weight: 800; color: #1b5e20; }
+  .suggest-row .label  { font-size: 12px; font-weight: 600; color: #2e7d32; }
+  .suggest-row .sub    { font-size: 10px; color: #558b2f; margin-top: 1px; }
+  .suggest-row .amount { font-size: 21px; font-weight: 800; color: #1b5e20; }
 
   /* 단가 참고표 */
   .toggle-btn {
-    width: 100%; background: white; border: none; border-radius: 16px;
-    padding: 16px 20px; font-size: 14px; font-weight: 600; color: #2E75B6;
-    cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    width: 100%; background: white; border: none; border-radius: 14px;
+    padding: 11px 14px; font-size: 12px; font-weight: 600; color: #2E75B6;
+    cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.07);
     display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 14px; transition: background 0.15s;
+    margin-bottom: 8px; transition: background 0.15s;
   }
   .toggle-btn:active { background: #f0f4f8; }
-  .toggle-icon { font-size: 18px; transition: transform 0.2s; }
+  .toggle-icon { font-size: 15px; transition: transform 0.2s; }
   .toggle-icon.open { transform: rotate(180deg); }
   .price-table { display: none; }
   .price-table.open { display: block; }
-  .price-table .card { margin-top: -8px; border-radius: 0 0 16px 16px; padding-top: 12px; }
-  .pt-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
+  .price-table .card { margin-top: -6px; border-radius: 0 0 14px 14px; padding-top: 10px; }
+  .pt-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #f5f5f5; font-size: 12px; }
   .pt-row:last-child { border-bottom: none; }
   .pt-row .range { color: #555; }
   .pt-row .price { font-weight: 700; color: #2E75B6; }
-  .pt-row.highlight { background: #FFF9C4; border-radius: 6px; padding: 9px 8px; margin: 0 -8px; }
+  .pt-row.highlight { background: #FFF9C4; border-radius: 5px; padding: 7px 8px; margin: 0 -8px; }
 
-  .note { font-size: 11.5px; color: #888; text-align: center; margin-top: 6px; line-height: 1.6; }
+  .note { font-size: 10.5px; color: #888; text-align: center; margin-top: 5px; line-height: 1.5; }
 </style>
 </head>
 <body>
@@ -311,7 +311,7 @@
         <button class="qty-btn" onclick="changeQty('motor',1)">+</button>
       </div>
     </div>
-    <div class="field" style="margin-top:14px;">
+    <div class="field" style="margin-top:8px;">
       <label>16채널 다이얼 리모컨 ZMR16 — $11.00/개</label>
       <div class="qty-control">
         <button class="qty-btn" onclick="changeQty('remote',-1)">−</button>
