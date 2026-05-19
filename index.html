@@ -142,8 +142,9 @@
     background: #fff0f0; color: #d32f2f;
     border: 1px solid #ffb3b3; border-radius: 6px;
     padding: 3px 9px; font-size: 11px; font-weight: 600;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-    margin-left: 6px; transition: background 0.15s;
+    cursor: pointer; white-space: nowrap;
+    margin-top: 5px; display: inline-block;
+    transition: background 0.15s;
   }
   .del-btn:active { background: #ffcdd2; }
 
@@ -532,9 +533,9 @@ function renderBlinds() {
       <div style="flex:1;min-width:0">
         <div class="name">블라인드 원단 #${i + 1} (맞춤 제작)</div>
         <div class="sub">${area.toFixed(2)}㎡ (${b.w}×${b.h}) × ${fmtUnit(unitPrice)}</div>
+        <button class="del-btn" onclick="removeBlind(${i})">삭제</button>
       </div>
       <div class="amount">${fmt(amt)}</div>
-      <button class="del-btn" onclick="removeBlind(${i})">삭제</button>
     </div>`;
   }).join('');
   document.getElementById('blindList').innerHTML = html;
