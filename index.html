@@ -107,15 +107,45 @@
     margin-bottom: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }
+
+  /* 카드 제목 행 (제목 + 버튼 나란히) */
+  .card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
   .card-title {
     font-size: 11px; font-weight: 700; color: #2E75B6;
     text-transform: uppercase; letter-spacing: 0.5px;
-    margin-bottom: 10px; display: flex; align-items: center; gap: 5px;
+    display: flex; align-items: center; gap: 5px;
   }
   .card-title::before {
     content: ''; display: block; width: 3px; height: 13px;
     background: #2E75B6; border-radius: 2px;
   }
+  /* 단독 card-title (버튼 없는 카드) */
+  .card > .card-title { margin-bottom: 10px; }
+
+  /* 견적에 추가 버튼 */
+  .add-btn {
+    background: #2E75B6; color: white; border: none;
+    border-radius: 8px; padding: 5px 11px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    white-space: nowrap; flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .add-btn:active { background: #1F5C9A; }
+
+  /* 삭제 버튼 */
+  .del-btn {
+    background: #fff0f0; color: #d32f2f;
+    border: 1px solid #ffb3b3; border-radius: 6px;
+    padding: 3px 9px; font-size: 11px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    margin-left: 6px; transition: background 0.15s;
+  }
+  .del-btn:active { background: #ffcdd2; }
 
   .field { margin-bottom: 8px; }
   .field:last-child { margin-bottom: 0; }
@@ -172,6 +202,13 @@
   .result-item .name   { font-size: 12px; color: #333; flex: 1; }
   .result-item .sub    { font-size: 10px; color: #999; margin-top: 1px; }
   .result-item .amount { font-size: 14px; font-weight: 700; color: #1a2a3a; margin-left: 8px; }
+
+  /* 블라인드 없을 때 안내 */
+  .no-blind {
+    text-align: center; padding: 12px 0;
+    font-size: 12px; color: #aaa;
+    border-bottom: 1px solid #f0f0f0;
+  }
 
   .total-card {
     background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
@@ -280,15 +317,18 @@
 
   <!-- 창문 크기 입력 -->
   <div class="card">
-    <div class="card-title">창문 크기</div>
+    <div class="card-title-row">
+      <div class="card-title">창문 크기</div>
+      <button class="add-btn" onclick="addBlind()">+ 견적에 추가</button>
+    </div>
     <div class="input-row">
       <div class="field">
         <label>가로 (m)</label>
-        <input type="number" id="width" value="1.5" min="0.1" step="0.1" inputmode="decimal" oninput="calc()">
+        <input type="number" id="width" value="1.5" min="0.1" step="0.1" inputmode="decimal" oninput="calcPreview()">
       </div>
       <div class="field">
         <label>세로 (m)</label>
-        <input type="number" id="height" value="1.0" min="0.1" step="0.1" inputmode="decimal" oninput="calc()">
+        <input type="number" id="height" value="1.0" min="0.1" step="0.1" inputmode="decimal" oninput="calcPreview()">
       </div>
     </div>
     <div class="area-display">
@@ -338,13 +378,8 @@
       </div>
       <div class="amount" id="remoteAmt"></div>
     </div>
-    <div class="result-item">
-      <div>
-        <div class="name">블라인드 원단 (맞춤 제작)</div>
-        <div class="sub" id="fabricSub"></div>
-      </div>
-      <div class="amount" id="fabricAmt"></div>
-    </div>
+    <!-- 블라인드 목록 (동적 렌더링) -->
+    <div id="blindList"></div>
   </div>
 
   <!-- 총합계 -->
@@ -414,9 +449,14 @@ const TIER_LABELS = [
   '6.5 ~ 7.0㎡','7.0 ~ 7.5㎡','7.5㎡ 초과',
 ];
 
-let motorQty = 1, remoteQty = 1;
-let currency = 'USD';
+// ── 상태 ─────────────────────────────────────────────────
+let motorQty  = 1;
+let remoteQty = 1;
+let currency  = 'USD';
 let deferredPrompt = null;
+
+// 블라인드 목록 (초기값: 1개)
+let blinds = [{ w: 1.5, h: 1.0 }];
 
 // ── 통화 포맷터 ──────────────────────────────────────────
 function getRate() { return parseFloat(document.getElementById('exRate').value) || 1600; }
@@ -443,34 +483,98 @@ function setCurrency(c) {
   calc();
 }
 
-// ── 계산 ─────────────────────────────────────────────────
+// ── 창문 크기 입력 미리보기 (목록에 반영 안 함) ──────────
+function calcPreview() {
+  const w    = parseFloat(document.getElementById('width').value)  || 0;
+  const h    = parseFloat(document.getElementById('height').value) || 0;
+  const area = w * h;
+  document.getElementById('areaVal').textContent = area.toFixed(2);
+  document.getElementById('areaWarning').classList.toggle('show', area > 7.5);
+  renderPriceTable(area);
+}
+
+// ── 견적에 추가 ──────────────────────────────────────────
+function addBlind() {
+  const w    = parseFloat(document.getElementById('width').value)  || 0;
+  const h    = parseFloat(document.getElementById('height').value) || 0;
+  const area = w * h;
+  if (w <= 0 || h <= 0) {
+    alert('가로/세로 값을 입력해주세요.');
+    return;
+  }
+  if (area > 7.5) {
+    alert('최대 면적(7.5㎡)을 초과합니다.\n크기를 확인해주세요.');
+    return;
+  }
+  blinds.push({ w, h });
+  calc();
+}
+
+// ── 블라인드 삭제 ────────────────────────────────────────
+function removeBlind(idx) {
+  if (!confirm('삭제하겠습니까?')) return;
+  blinds.splice(idx, 1);
+  calc();
+}
+
+// ── 블라인드 목록 렌더링 ─────────────────────────────────
+function renderBlinds() {
+  if (blinds.length === 0) {
+    document.getElementById('blindList').innerHTML =
+      '<div class="no-blind">블라인드 없음 — 창문 크기 입력 후 "견적에 추가" 버튼을 누르세요</div>';
+    return;
+  }
+  const html = blinds.map((b, i) => {
+    const area      = b.w * b.h;
+    const unitPrice = AREA_TIERS.find(t => area <= t.max).price;
+    const amt       = area * unitPrice;
+    return `<div class="result-item">
+      <div style="flex:1;min-width:0">
+        <div class="name">블라인드 원단 #${i + 1} (맞춤 제작)</div>
+        <div class="sub">${area.toFixed(2)}㎡ (${b.w}×${b.h}) × ${fmtUnit(unitPrice)}</div>
+      </div>
+      <div class="amount">${fmt(amt)}</div>
+      <button class="del-btn" onclick="removeBlind(${i})">삭제</button>
+    </div>`;
+  }).join('');
+  document.getElementById('blindList').innerHTML = html;
+}
+
+// ── 전체 계산 ────────────────────────────────────────────
 function calc() {
-  const w      = parseFloat(document.getElementById('width').value)  || 0;
-  const h      = parseFloat(document.getElementById('height').value) || 0;
-  const area   = w * h;
   const margin = parseFloat(document.getElementById('margin').value) || 0;
 
-  // 면적 경고
-  document.getElementById('areaWarning').classList.toggle('show', area > 7.5);
-
-  const unitPrice = AREA_TIERS.find(t => area <= t.max).price;
+  // 모터 · 리모컨
   const motorAmt  = motorQty  * MOTOR_PRICE;
   const remoteAmt = remoteQty * REMOTE_PRICE;
-  const fabricAmt = area * unitPrice;
-  const total     = motorAmt + remoteAmt + fabricAmt;
-  const suggest   = total * (1 + margin / 100);
 
-  document.getElementById('areaVal').textContent    = area.toFixed(2);
+  // 블라인드 합계
+  let fabricTotal = 0;
+  blinds.forEach(b => {
+    const area = b.w * b.h;
+    const u    = AREA_TIERS.find(t => area <= t.max).price;
+    fabricTotal += area * u;
+  });
+
+  const total   = motorAmt + remoteAmt + fabricTotal;
+  const suggest = total * (1 + margin / 100);
+
   document.getElementById('motorSub').textContent   = motorQty  + '대 × ' + fmt(MOTOR_PRICE);
   document.getElementById('motorAmt').textContent   = fmt(motorAmt);
   document.getElementById('remoteSub').textContent  = remoteQty + '개 × ' + fmt(REMOTE_PRICE);
   document.getElementById('remoteAmt').textContent  = fmt(remoteAmt);
-  document.getElementById('fabricSub').textContent  = area.toFixed(2) + '㎡ × ' + fmtUnit(unitPrice);
-  document.getElementById('fabricAmt').textContent  = fmt(fabricAmt);
   document.getElementById('totalAmt').textContent   = fmt(total);
   document.getElementById('suggestSub').textContent = '마진 ' + margin + '% 적용';
   document.getElementById('suggestAmt').textContent = fmt(suggest);
 
+  renderBlinds();
+
+  // 미리보기 영역도 갱신
+  const w    = parseFloat(document.getElementById('width').value)  || 0;
+  const h    = parseFloat(document.getElementById('height').value) || 0;
+  const area = w * h;
+  document.getElementById('areaVal').textContent = area.toFixed(2);
+  document.getElementById('areaWarning').classList.toggle('show', area > 7.5);
   renderPriceTable(area);
 }
 
@@ -523,7 +627,7 @@ async function installApp() {
 
 if ('serviceWorker' in navigator) {
   const swCode = `
-    const CACHE = 'zemismart-v2';
+    const CACHE = 'zemismart-v3';
     self.addEventListener('install', e => {
       e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
       self.skipWaiting();
