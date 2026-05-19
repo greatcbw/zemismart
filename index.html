@@ -306,8 +306,8 @@
 <body>
 
 <div class="header">
-  <h1>견적 계산</h1>
-  <p>통화 단위 : USD · 국제 배송비 별도</p>
+  <h1>견적 계산 · <span id="currencyLabel">USD</span></h1>
+  <p>국제 배송비 별도</p>
 </div>
 
 <div class="container">
@@ -489,6 +489,7 @@ function setCurrency(c) {
   currency = c;
   document.getElementById('btnUSD').classList.toggle('active', c === 'USD');
   document.getElementById('btnKRW').classList.toggle('active', c === 'KRW');
+  document.getElementById('currencyLabel').textContent = c;
   calc();
 }
 
