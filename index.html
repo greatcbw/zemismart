@@ -187,13 +187,22 @@
     border-bottom: 1px solid #f0f0f0;
   }
 
-  /* 블라인드 품명 클릭 영역 */
-  .blind-name-btn {
-    display: flex; align-items: center; gap: 4px;
-    cursor: pointer; user-select: none;
+  /* 블라인드 품명 행 */
+  .blind-name-row {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
   }
-  .blind-name-btn:active { opacity: 0.7; }
-  .edit-icon { font-size: 11px; color: #2E75B6; flex-shrink: 0; }
+  .blind-name-row .name { flex: 1; min-width: 0; }
+  /* 수정/삭제 버튼 공통 */
+  .btn-edit, .del-btn {
+    border-radius: 6px; padding: 3px 9px; font-size: 11px; font-weight: 600;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .btn-edit {
+    background: #eef4ff; color: #2E75B6;
+    border: 1px solid #b3cfff;
+  }
+  .btn-edit:active { background: #d0e4ff; }
 
   /* 블라인드 인라인 편집 폼 */
   .blind-edit-row {
@@ -215,14 +224,9 @@
   }
   .blind-edit-confirm:active { background: #1F5C9A; }
 
-  /* 삭제 버튼 */
   .del-btn {
     background: #fff0f0; color: #d32f2f;
-    border: 1px solid #ffb3b3; border-radius: 6px;
-    padding: 3px 9px; font-size: 11px; font-weight: 600;
-    cursor: pointer; white-space: nowrap;
-    margin-top: 5px; display: inline-block;
-    transition: background 0.15s;
+    border: 1px solid #ffb3b3;
   }
   .del-btn:active { background: #ffcdd2; }
 
@@ -573,13 +577,13 @@ function renderBlinds() {
       </div>` : '';
     return `<div class="result-item">
       <div style="flex:1;min-width:0">
-        <div class="blind-name-btn" onclick="editBlind(${i})">
+        <div class="blind-name-row">
           <span class="name">블라인드 원단 #${i + 1} (맞춤 제작)</span>
-          <span class="edit-icon">${isEditing ? '▲' : '✏'}</span>
+          <button class="btn-edit" onclick="editBlind(${i})">${isEditing ? '▲ 닫기' : '수정'}</button>
+          <button class="del-btn" onclick="removeBlind(${i})">삭제</button>
         </div>
         ${editForm}
         <div class="sub">${area.toFixed(2)}㎡ (${b.w}×${b.h}) × ${fmtUnit(unitPrice)}</div>
-        <button class="del-btn" onclick="removeBlind(${i})">삭제</button>
       </div>
       <div class="amount">${fmt(amt)}</div>
     </div>`;
