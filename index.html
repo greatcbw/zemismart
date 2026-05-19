@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Zemismart">
 <meta name="theme-color" content="#1F3864">
-<title>Zemismart 견적 계산기</title>
+<title>견적 계산</title>
 
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Zemismart+%EA%B2%AC%EC%A0%81+%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22short_name%22%3A%22Zemismart%22%2C%22description%22%3A%22%EC%8A%A4%EB%A7%88%ED%8A%B8+%EC%A0%84%EB%8F%99+%EB%A1%A4%EC%8A%A4%ED%81%AC%EB%A6%B0+%EB%8F%84%EB%A7%A4+%EA%B2%AC%EC%A0%81+%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4f8%22%2C%22theme_color%22%3A%22%231F3864%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg+xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27+viewBox%3D%270+0+512+512%27%253E%253Crect+width%3D%27512%27+height%3D%27512%27+rx%3D%2780%27+fill%3D%27%231F3864%27%2F%253E%253Ctext+x%3D%27256%27+y%3D%27340%27+font-size%3D%27280%27+text-anchor%3D%27middle%27%253E%25F0%259F%25AA%259F%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%231F3864'/><text x='256' y='340' font-size='280' text-anchor='middle'>🪟</text></svg>">
@@ -65,54 +65,32 @@
     transition: all 0.18s;
     white-space: nowrap;
   }
-  .cur-btn.active {
-    background: white;
-    color: #1F3864;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.18);
-  }
+  .cur-btn.active { background: white; color: #1F3864; box-shadow: 0 1px 6px rgba(0,0,0,0.18); }
   .rate-wrap {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    flex: 1;
-    justify-content: flex-end;
-    min-width: 0;
+    display: flex; align-items: center; gap: 5px;
+    flex: 1; justify-content: flex-end; min-width: 0;
   }
   .rate-label { font-size: 11px; color: rgba(255,255,255,0.7); white-space: nowrap; }
   .rate-input {
-    width: 80px;
-    min-width: 0;
-    flex-shrink: 1;
-    height: 28px;
-    border: 1.5px solid rgba(255,255,255,0.3);
-    border-radius: 7px;
-    background: rgba(255,255,255,0.12);
-    color: white;
-    font-size: 14px;
-    font-weight: 700;
-    text-align: center;
-    outline: none;
-    -webkit-appearance: none;
+    width: 80px; min-width: 0; flex-shrink: 1; height: 28px;
+    border: 1.5px solid rgba(255,255,255,0.3); border-radius: 7px;
+    background: rgba(255,255,255,0.12); color: white;
+    font-size: 14px; font-weight: 700; text-align: center;
+    outline: none; -webkit-appearance: none;
   }
   .rate-input:focus { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.2); }
   .rate-unit { font-size: 11px; color: rgba(255,255,255,0.7); white-space: nowrap; }
 
-  /* ── 공통 ────────────────────────────────────────────── */
+  /* ── 공통 카드 ────────────────────────────────────────── */
   .container { padding: 10px 12px; max-width: 480px; margin: 0 auto; }
 
   .card {
-    background: white;
-    border-radius: 14px;
-    padding: 12px 14px;
-    margin-bottom: 8px;
+    background: white; border-radius: 14px;
+    padding: 12px 14px; margin-bottom: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   }
-
-  /* 카드 제목 행 (제목 + 버튼 나란히) */
   .card-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 10px;
   }
   .card-title {
@@ -124,18 +102,118 @@
     content: ''; display: block; width: 3px; height: 13px;
     background: #2E75B6; border-radius: 2px;
   }
-  /* 단독 card-title (버튼 없는 카드) */
-  .card > .card-title { margin-bottom: 10px; }
 
-  /* 견적에 추가 버튼 */
+  /* ── 블라인드 추가 폼 ─────────────────────────────────── */
   .add-btn {
     background: #2E75B6; color: white; border: none;
     border-radius: 8px; padding: 5px 11px;
     font-size: 12px; font-weight: 700; cursor: pointer;
-    white-space: nowrap; flex-shrink: 0;
-    transition: background 0.15s;
+    white-space: nowrap; flex-shrink: 0; transition: background 0.15s;
   }
   .add-btn:active { background: #1F5C9A; }
+  .add-btn.open { background: #555; }
+
+  .add-form-wrap {
+    background: #f0f4f8; border-radius: 10px;
+    padding: 10px 12px; margin-bottom: 10px;
+  }
+  .add-form-row {
+    display: flex; align-items: flex-end; gap: 6px;
+  }
+  .add-form-field { flex: 1; }
+  .add-form-field label {
+    display: block; font-size: 11px; color: #666;
+    margin-bottom: 3px; font-weight: 500;
+  }
+  .add-form-field input[type="number"] {
+    width: 100%; height: 36px;
+    border: 2px solid #e2e8f0; border-radius: 9px;
+    font-size: 14px; font-weight: 700; text-align: center;
+    color: #1a2a3a; background: white; outline: none;
+    transition: border-color 0.2s; -webkit-appearance: none;
+  }
+  .add-form-field input[type="number"]:focus { border-color: #2E75B6; background: #EEF4FF; }
+  .add-form-sep { font-size: 13px; color: #888; padding-bottom: 9px; flex-shrink: 0; }
+  .add-confirm-btn {
+    background: #2E75B6; color: white; border: none;
+    border-radius: 9px; padding: 0 14px; height: 36px;
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    flex-shrink: 0; transition: background 0.15s;
+    align-self: flex-end;
+  }
+  .add-confirm-btn:active { background: #1F5C9A; }
+  .add-preview {
+    font-size: 11px; color: #2E75B6; font-weight: 600;
+    margin-top: 6px;
+  }
+  .area-warning {
+    display: none; margin-top: 6px;
+    background: #fff0f0; border: 1.5px solid #ffb3b3;
+    border-radius: 8px; padding: 6px 10px; font-size: 11px; line-height: 1.4;
+  }
+  .area-warning.show { display: block; }
+  .area-warning .warn-red { color: #d32f2f; font-weight: 800; }
+
+  /* ── 견적 행 (모터/리모컨/블라인드 공통) ──────────────── */
+  .result-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid #f0f0f0;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item .name   { font-size: 12px; color: #333; }
+  .result-item .sub    { font-size: 10px; color: #999; margin-top: 1px; }
+  .result-item .amount { font-size: 14px; font-weight: 700; color: #1a2a3a; margin-left: 8px; white-space: nowrap; }
+
+  /* 인라인 수량 조절 */
+  .inline-qty {
+    display: flex; align-items: center;
+    border: 1.5px solid #e2e8f0; border-radius: 8px;
+    overflow: hidden; background: #f8fafc;
+    height: 30px; margin: 0 8px; flex-shrink: 0;
+  }
+  .iq-btn {
+    width: 28px; height: 100%; font-size: 16px; font-weight: 300;
+    color: #2E75B6; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
+  }
+  .iq-btn:active { background: #dbeafe; }
+  .iq-val { font-size: 13px; font-weight: 700; color: #1a2a3a; padding: 0 6px; }
+
+  /* 블라인드 없을 때 안내 */
+  .no-blind {
+    text-align: center; padding: 10px 0;
+    font-size: 11px; color: #aaa;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  /* 블라인드 품명 클릭 영역 */
+  .blind-name-btn {
+    display: flex; align-items: center; gap: 4px;
+    cursor: pointer; user-select: none;
+  }
+  .blind-name-btn:active { opacity: 0.7; }
+  .edit-icon { font-size: 11px; color: #2E75B6; flex-shrink: 0; }
+
+  /* 블라인드 인라인 편집 폼 */
+  .blind-edit-row {
+    display: flex; align-items: center; gap: 5px;
+    margin: 7px 0 4px;
+  }
+  .blind-edit-row input[type="number"] {
+    width: 58px; height: 32px; font-size: 13px;
+    border: 2px solid #2E75B6; border-radius: 8px;
+    background: #EEF4FF; text-align: center;
+    font-weight: 700; color: #1a2a3a; outline: none;
+    -webkit-appearance: none;
+  }
+  .blind-edit-row .sep { font-size: 12px; color: #888; }
+  .blind-edit-confirm {
+    background: #2E75B6; color: white; border: none;
+    border-radius: 7px; padding: 5px 12px;
+    font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0;
+  }
+  .blind-edit-confirm:active { background: #1F5C9A; }
 
   /* 삭제 버튼 */
   .del-btn {
@@ -148,95 +226,7 @@
   }
   .del-btn:active { background: #ffcdd2; }
 
-  /* 블라인드 품명 클릭 영역 */
-  .blind-name-btn {
-    display: flex; align-items: center; gap: 5px;
-    cursor: pointer; user-select: none;
-  }
-  .blind-name-btn:active { opacity: 0.7; }
-  .edit-icon { font-size: 11px; color: #2E75B6; flex-shrink: 0; }
-
-  /* 인라인 편집 폼 */
-  .blind-edit-row {
-    display: flex; align-items: center; gap: 5px;
-    margin: 7px 0 4px;
-  }
-  .blind-edit-row input[type="number"] {
-    width: 60px; height: 34px; font-size: 13px;
-    border: 2px solid #2E75B6; border-radius: 8px;
-    background: #EEF4FF;
-  }
-  .blind-edit-row .sep { font-size: 12px; color: #888; }
-  .blind-edit-confirm {
-    background: #2E75B6; color: white; border: none;
-    border-radius: 7px; padding: 5px 12px;
-    font-size: 12px; font-weight: 700; cursor: pointer; flex-shrink: 0;
-  }
-  .blind-edit-confirm:active { background: #1F5C9A; }
-
-  .field { margin-bottom: 8px; }
-  .field:last-child { margin-bottom: 0; }
-  .field label { display: block; font-size: 11px; color: #666; margin-bottom: 4px; font-weight: 500; }
-
-  .input-row { display: flex; gap: 8px; }
-  .input-row .field { flex: 1; }
-
-  input[type="number"] {
-    width: 100%; height: 40px;
-    border: 2px solid #e2e8f0; border-radius: 10px;
-    font-size: 14px; font-weight: 700; text-align: center;
-    color: #1a2a3a; background: #f8fafc; outline: none;
-    transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
-  }
-  input[type="number"]:focus { border-color: #2E75B6; background: #EEF4FF; }
-
-  .qty-control {
-    display: flex; align-items: center;
-    border: 2px solid #e2e8f0; border-radius: 10px;
-    overflow: hidden; background: #f8fafc; height: 40px;
-  }
-  .qty-btn {
-    width: 40px; height: 100%; font-size: 14px; font-weight: 300;
-    color: #2E75B6; background: none; border: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; transition: background 0.15s;
-  }
-  .qty-btn:active { background: #dbeafe; }
-  .qty-val { flex: 1; text-align: center; font-size: 14px; font-weight: 700; color: #1a2a3a; }
-
-  .area-display {
-    background: linear-gradient(135deg, #EEF4FF, #dbeafe);
-    border-radius: 10px; padding: 9px 12px;
-    display: flex; justify-content: space-between; align-items: center; margin-top: 8px;
-  }
-  .area-display .label { font-size: 11px; color: #555; font-weight: 500; }
-  .area-display .value { font-size: 14px; font-weight: 800; color: #1F3864; }
-  .area-display .unit  { font-size: 11px; color: #2E75B6; font-weight: 600; }
-
-  .area-warning {
-    display: none; margin-top: 7px;
-    background: #fff0f0; border: 1.5px solid #ffb3b3;
-    border-radius: 8px; padding: 7px 12px; font-size: 12px; line-height: 1.4;
-  }
-  .area-warning.show { display: block; }
-  .area-warning .warn-red { color: #d32f2f; font-weight: 800; }
-
-  .result-item {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0; border-bottom: 1px solid #f0f0f0;
-  }
-  .result-item:last-child { border-bottom: none; }
-  .result-item .name   { font-size: 12px; color: #333; flex: 1; }
-  .result-item .sub    { font-size: 10px; color: #999; margin-top: 1px; }
-  .result-item .amount { font-size: 14px; font-weight: 700; color: #1a2a3a; margin-left: 8px; }
-
-  /* 블라인드 없을 때 안내 */
-  .no-blind {
-    text-align: center; padding: 12px 0;
-    font-size: 12px; color: #aaa;
-    border-bottom: 1px solid #f0f0f0;
-  }
-
+  /* ── 총합계 ────────────────────────────────────────────── */
   .total-card {
     background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
     border-radius: 14px; padding: 13px 16px; margin-bottom: 8px;
@@ -263,13 +253,13 @@
   }
   #installBtn:active { opacity: 0.8; }
 
-  /* 마진율 + 제안가격 */
+  /* ── 마진율 + 제안가격 ──────────────────────────────────── */
   .margin-card { background: white; border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
   .margin-row  { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
   .margin-row label { font-size: 12px; color: #333; font-weight: 500; white-space: nowrap; }
   .margin-input-wrap {
     display: flex; align-items: center; border: 2px solid #e2e8f0;
-    border-radius: 10px; overflow: hidden; background: #f8fafc; height: 40px; flex: 1;
+    border-radius: 10px; overflow: hidden; background: #f8fafc; height: 36px; flex: 1;
   }
   .margin-input-wrap:focus-within { border-color: #2E75B6; background: #EEF4FF; }
   .margin-input-wrap input {
@@ -278,7 +268,6 @@
     color: #1a2a3a; outline: none; -webkit-appearance: none;
   }
   .margin-input-wrap span { padding-right: 10px; font-size: 14px; font-weight: 600; color: #2E75B6; }
-
   .suggest-row {
     background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
     border-radius: 10px; padding: 10px 12px;
@@ -288,7 +277,7 @@
   .suggest-row .sub    { font-size: 10px; color: #558b2f; margin-top: 1px; }
   .suggest-row .amount { font-size: 14px; font-weight: 800; color: #1b5e20; }
 
-  /* 단가 참고표 */
+  /* ── 단가 참고표 ─────────────────────────────────────────── */
   .toggle-btn {
     width: 100%; background: white; border: none; border-radius: 14px;
     padding: 11px 14px; font-size: 12px; font-weight: 600; color: #2E75B6;
@@ -307,14 +296,13 @@
   .pt-row .range { color: #555; }
   .pt-row .price { font-weight: 700; color: #2E75B6; }
   .pt-row.highlight { background: #FFF9C4; border-radius: 5px; padding: 7px 8px; margin: 0 -8px; }
-
   .note { font-size: 10.5px; color: #888; text-align: center; margin-top: 5px; line-height: 1.5; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🪟 Zemismart<br>스마트 전동 롤스크린 견적 계산기</h1>
+  <h1>견적 계산</h1>
   <p>통화 단위 : USD · 국제 배송비 별도</p>
 </div>
 
@@ -342,70 +330,64 @@
     <button id="installBtn" onclick="installApp()">설치</button>
   </div>
 
-  <!-- 창문 크기 입력 -->
+  <!-- 견적 금액 (통합 카드) -->
   <div class="card">
     <div class="card-title-row">
-      <div class="card-title">창문 크기</div>
-      <button class="add-btn" onclick="addBlind()">+ 견적에 추가</button>
+      <div class="card-title">견적 금액</div>
+      <button id="addFormBtn" class="add-btn" onclick="toggleAddForm()">+ 블라인드</button>
     </div>
-    <div class="input-row">
-      <div class="field">
-        <label>가로 (m)</label>
-        <input type="number" id="width" value="1.5" min="0.1" step="0.1" inputmode="decimal" oninput="calcPreview()">
-      </div>
-      <div class="field">
-        <label>세로 (m)</label>
-        <input type="number" id="height" value="1.0" min="0.1" step="0.1" inputmode="decimal" oninput="calcPreview()">
-      </div>
-    </div>
-    <div class="area-display">
-      <span class="label">계산된 면적</span>
-      <span><span class="value" id="areaVal">1.50</span> <span class="unit">㎡</span></span>
-    </div>
-    <div class="area-warning" id="areaWarning">
-      <span class="warn-red">경고!</span> 최대 면적(7.5㎡) 초과 재입력 바람
-    </div>
-  </div>
 
-  <!-- 수량 입력 -->
-  <div class="card">
-    <div class="card-title">수량</div>
-    <div class="field">
-      <label>Zigbee 유선 모터 (25mm) ZM25Z — $39.00/대</label>
-      <div class="qty-control">
-        <button class="qty-btn" onclick="changeQty('motor',-1)">−</button>
-        <span class="qty-val" id="motorVal">1</span>
-        <button class="qty-btn" onclick="changeQty('motor',1)">+</button>
+    <!-- 블라인드 추가 폼 (토글) -->
+    <div id="addFormWrap" style="display:none">
+      <div class="add-form-wrap">
+        <div class="add-form-row">
+          <div class="add-form-field">
+            <label>가로 (m)</label>
+            <input type="number" id="width" value="1.5" min="0.1" step="0.1" inputmode="decimal" oninput="updateAddPreview()">
+          </div>
+          <span class="add-form-sep">×</span>
+          <div class="add-form-field">
+            <label>세로 (m)</label>
+            <input type="number" id="height" value="1.0" min="0.1" step="0.1" inputmode="decimal" oninput="updateAddPreview()">
+          </div>
+          <button class="add-confirm-btn" onclick="addBlind()">추가</button>
+        </div>
+        <div class="add-preview">면적 <span id="areaVal">1.50</span>㎡</div>
+        <div class="area-warning" id="areaWarning">
+          <span class="warn-red">경고!</span> 최대 면적(7.5㎡) 초과 재입력 바람
+        </div>
       </div>
     </div>
-    <div class="field" style="margin-top:8px;">
-      <label>16채널 다이얼 리모컨 ZMR16 — $11.00/개</label>
-      <div class="qty-control">
-        <button class="qty-btn" onclick="changeQty('remote',-1)">−</button>
-        <span class="qty-val" id="remoteVal">1</span>
-        <button class="qty-btn" onclick="changeQty('remote',1)">+</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- 견적 금액 -->
-  <div class="card">
-    <div class="card-title">견적 금액</div>
+    <!-- 모터 -->
     <div class="result-item">
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="name">Zigbee 유선 모터 ZM25Z</div>
-        <div class="sub" id="motorSub"></div>
+        <div class="sub">$39.00/대</div>
+      </div>
+      <div class="inline-qty">
+        <button class="iq-btn" onclick="changeQty('motor',-1)">−</button>
+        <span class="iq-val" id="motorVal">1</span>
+        <button class="iq-btn" onclick="changeQty('motor',1)">+</button>
       </div>
       <div class="amount" id="motorAmt"></div>
     </div>
+
+    <!-- 리모컨 -->
     <div class="result-item">
-      <div>
+      <div style="flex:1;min-width:0">
         <div class="name">16채널 다이얼 리모컨 ZMR16</div>
-        <div class="sub" id="remoteSub"></div>
+        <div class="sub">$11.00/개</div>
+      </div>
+      <div class="inline-qty">
+        <button class="iq-btn" onclick="changeQty('remote',-1)">−</button>
+        <span class="iq-val" id="remoteVal">1</span>
+        <button class="iq-btn" onclick="changeQty('remote',1)">+</button>
       </div>
       <div class="amount" id="remoteAmt"></div>
     </div>
-    <!-- 블라인드 목록 (동적 렌더링) -->
+
+    <!-- 블라인드 목록 -->
     <div id="blindList"></div>
   </div>
 
@@ -481,29 +463,24 @@ let motorQty   = 1;
 let remoteQty  = 1;
 let currency   = 'USD';
 let deferredPrompt = null;
-let editingIdx = -1;   // 현재 편집 중인 블라인드 인덱스 (-1: 없음)
-
-// 블라인드 목록 (초기값: 1개)
-let blinds = [{ w: 1.5, h: 1.0 }];
+let editingIdx = -1;
+let blinds     = [{ w: 1.5, h: 1.0 }];
 
 // ── 통화 포맷터 ──────────────────────────────────────────
 function getRate() { return parseFloat(document.getElementById('exRate').value) || 1600; }
 
 function fmt(usd) {
   if (currency === 'KRW') {
-    const krw = Math.round(usd * getRate());
-    return '₩' + krw.toLocaleString('ko-KR');
+    return '₩' + Math.round(usd * getRate()).toLocaleString('ko-KR');
   }
   return '$' + usd.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
-
 function fmtUnit(usd) {
   if (currency === 'KRW') {
     return '₩' + Math.round(usd * getRate()).toLocaleString('ko-KR') + '/㎡';
   }
   return '$' + usd.toFixed(2) + '/㎡';
 }
-
 function setCurrency(c) {
   currency = c;
   document.getElementById('btnUSD').classList.toggle('active', c === 'USD');
@@ -511,8 +488,19 @@ function setCurrency(c) {
   calc();
 }
 
-// ── 창문 크기 입력 미리보기 (목록에 반영 안 함) ──────────
-function calcPreview() {
+// ── 추가 폼 토글 ─────────────────────────────────────────
+function toggleAddForm() {
+  const wrap = document.getElementById('addFormWrap');
+  const btn  = document.getElementById('addFormBtn');
+  const open = wrap.style.display === 'none';
+  wrap.style.display = open ? 'block' : 'none';
+  btn.textContent = open ? '✕ 닫기' : '+ 블라인드';
+  btn.classList.toggle('open', open);
+  if (open) updateAddPreview();
+}
+
+// ── 추가 폼 미리보기 ─────────────────────────────────────
+function updateAddPreview() {
   const w    = parseFloat(document.getElementById('width').value)  || 0;
   const h    = parseFloat(document.getElementById('height').value) || 0;
   const area = w * h;
@@ -521,26 +509,27 @@ function calcPreview() {
   renderPriceTable(area);
 }
 
-// ── 견적에 추가 ──────────────────────────────────────────
+// ── 블라인드 추가 ────────────────────────────────────────
 function addBlind() {
   const w    = parseFloat(document.getElementById('width').value)  || 0;
   const h    = parseFloat(document.getElementById('height').value) || 0;
   const area = w * h;
-  if (w <= 0 || h <= 0) {
-    alert('가로/세로 값을 입력해주세요.');
-    return;
-  }
-  if (area > 7.5) {
-    alert('최대 면적(7.5㎡)을 초과합니다.\n크기를 확인해주세요.');
-    return;
-  }
+  if (w <= 0 || h <= 0) { alert('가로/세로 값을 입력해주세요.'); return; }
+  if (area > 7.5) { alert('최대 면적(7.5㎡)을 초과합니다.\n크기를 확인해주세요.'); return; }
   blinds.push({ w, h });
+  // 폼 초기화 후 닫기
+  document.getElementById('width').value  = '1.5';
+  document.getElementById('height').value = '1.0';
+  updateAddPreview();
+  toggleAddForm();
   calc();
 }
 
 // ── 블라인드 삭제 ────────────────────────────────────────
 function removeBlind(idx) {
   if (!confirm('삭제하겠습니까?')) return;
+  if (editingIdx === idx) editingIdx = -1;
+  else if (editingIdx > idx) editingIdx--;
   blinds.splice(idx, 1);
   calc();
 }
@@ -566,7 +555,7 @@ function applyEdit(idx) {
 function renderBlinds() {
   if (blinds.length === 0) {
     document.getElementById('blindList').innerHTML =
-      '<div class="no-blind">블라인드 없음 — 창문 크기 입력 후 "견적에 추가" 버튼을 누르세요</div>';
+      '<div class="no-blind">블라인드 없음 — "+ 블라인드" 버튼으로 추가하세요</div>';
     return;
   }
   const html = blinds.map((b, i) => {
@@ -574,8 +563,7 @@ function renderBlinds() {
     const unitPrice = AREA_TIERS.find(t => area <= t.max).price;
     const amt       = area * unitPrice;
     const isEditing = (editingIdx === i);
-
-    const editForm = isEditing ? `
+    const editForm  = isEditing ? `
       <div class="blind-edit-row">
         <input type="number" id="ew${i}" value="${b.w}" min="0.1" step="0.1" inputmode="decimal">
         <span class="sep">×</span>
@@ -583,7 +571,6 @@ function renderBlinds() {
         <span class="sep">m</span>
         <button class="blind-edit-confirm" onclick="applyEdit(${i})">확인</button>
       </div>` : '';
-
     return `<div class="result-item">
       <div style="flex:1;min-width:0">
         <div class="blind-name-btn" onclick="editBlind(${i})">
@@ -602,40 +589,25 @@ function renderBlinds() {
 
 // ── 전체 계산 ────────────────────────────────────────────
 function calc() {
-  const margin = parseFloat(document.getElementById('margin').value) || 0;
-
-  // 모터 · 리모컨
+  const margin    = parseFloat(document.getElementById('margin').value) || 0;
   const motorAmt  = motorQty  * MOTOR_PRICE;
   const remoteAmt = remoteQty * REMOTE_PRICE;
-
-  // 블라인드 합계
   let fabricTotal = 0;
   blinds.forEach(b => {
     const area = b.w * b.h;
-    const u    = AREA_TIERS.find(t => area <= t.max).price;
-    fabricTotal += area * u;
+    fabricTotal += area * AREA_TIERS.find(t => area <= t.max).price;
   });
-
   const total   = motorAmt + remoteAmt + fabricTotal;
   const suggest = total * (1 + margin / 100);
 
-  document.getElementById('motorSub').textContent   = motorQty  + '대 × ' + fmt(MOTOR_PRICE);
   document.getElementById('motorAmt').textContent   = fmt(motorAmt);
-  document.getElementById('remoteSub').textContent  = remoteQty + '개 × ' + fmt(REMOTE_PRICE);
   document.getElementById('remoteAmt').textContent  = fmt(remoteAmt);
   document.getElementById('totalAmt').textContent   = fmt(total);
   document.getElementById('suggestSub').textContent = '마진 ' + margin + '% 적용';
   document.getElementById('suggestAmt').textContent = fmt(suggest);
 
   renderBlinds();
-
-  // 미리보기 영역도 갱신
-  const w    = parseFloat(document.getElementById('width').value)  || 0;
-  const h    = parseFloat(document.getElementById('height').value) || 0;
-  const area = w * h;
-  document.getElementById('areaVal').textContent = area.toFixed(2);
-  document.getElementById('areaWarning').classList.toggle('show', area > 7.5);
-  renderPriceTable(area);
+  updateAddPreview();
 }
 
 function changeQty(type, delta) {
@@ -687,7 +659,7 @@ async function installApp() {
 
 if ('serviceWorker' in navigator) {
   const swCode = `
-    const CACHE = 'zemismart-v3';
+    const CACHE = 'zemismart-v4';
     self.addEventListener('install', e => {
       e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
       self.skipWaiting();
