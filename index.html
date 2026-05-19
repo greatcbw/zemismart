@@ -37,7 +37,9 @@
   /* ── 통화/환율 바 ───────────────────────────────────── */
   .currency-bar {
     background: #1a2f55;
-    padding: 10px 16px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -248,20 +250,20 @@
   <p>통화 단위 : USD · 국제 배송비 별도</p>
 </div>
 
-<!-- 통화 · 환율 설정 바 -->
-<div class="currency-bar">
-  <div class="cur-toggle">
-    <button id="btnUSD" class="cur-btn active" onclick="setCurrency('USD')">$ USD</button>
-    <button id="btnKRW" class="cur-btn"        onclick="setCurrency('KRW')">₩ KRW</button>
-  </div>
-  <div class="rate-wrap">
-    <span class="rate-label">환율</span>
-    <input class="rate-input" type="number" id="exRate" value="1600" min="1" step="10" inputmode="numeric" oninput="calc()">
-    <span class="rate-unit">원/$</span>
-  </div>
-</div>
-
 <div class="container">
+
+  <!-- 통화 · 환율 설정 바 -->
+  <div class="currency-bar">
+    <div class="cur-toggle">
+      <button id="btnUSD" class="cur-btn active" onclick="setCurrency('USD')">$ USD</button>
+      <button id="btnKRW" class="cur-btn"        onclick="setCurrency('KRW')">₩ KRW</button>
+    </div>
+    <div class="rate-wrap">
+      <span class="rate-label">환율</span>
+      <input class="rate-input" type="number" id="exRate" value="1600" min="1" step="10" inputmode="numeric" oninput="calc()">
+      <span class="rate-unit">원/$</span>
+    </div>
+  </div>
 
   <!-- 앱 설치 배너 -->
   <div id="installBanner">
