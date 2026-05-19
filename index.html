@@ -10,10 +10,7 @@
 <meta name="theme-color" content="#1F3864">
 <title>Zemismart 견적 계산기</title>
 
-<!-- PWA Manifest (인라인) -->
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Zemismart+%EA%B2%AC%EC%A0%81+%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22short_name%22%3A%22Zemismart%22%2C%22description%22%3A%22%EC%8A%A4%EB%A7%88%ED%8A%B8+%EC%A0%84%EB%8F%99+%EB%A1%A4%EC%8A%A4%ED%81%AC%EB%A6%B0+%EB%8F%84%EB%A7%A4+%EA%B2%AC%EC%A0%81+%EA%B3%84%EC%82%B0%EA%B8%B0%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23f0f4f8%22%2C%22theme_color%22%3A%22%231F3864%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg+xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27+viewBox%3D%270+0+512+512%27%253E%253Crect+width%3D%27512%27+height%3D%27512%27+rx%3D%2780%27+fill%3D%27%231F3864%27%2F%253E%253Ctext+x%3D%27256%27+y%3D%27340%27+font-size%3D%27280%27+text-anchor%3D%27middle%27%253E%25F0%259F%25AA%259F%253C%2Ftext%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
-
-<!-- Apple 홈화면 아이콘 -->
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%231F3864'/><text x='256' y='340' font-size='280' text-anchor='middle'>🪟</text></svg>">
 
 <style>
@@ -30,13 +27,71 @@
   .header {
     background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
     color: white;
-    padding: 24px 20px 20px;
+    padding: 24px 20px 16px;
     text-align: center;
     box-shadow: 0 2px 12px rgba(31,56,100,0.3);
   }
   .header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.4; }
-  .header p { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+  .header p  { font-size: 12px; opacity: 0.75; margin-top: 4px; }
 
+  /* ── 통화/환율 바 ───────────────────────────────────── */
+  .currency-bar {
+    background: #1a2f55;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .cur-toggle {
+    display: flex;
+    background: rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 3px;
+    gap: 3px;
+    flex-shrink: 0;
+  }
+  .cur-btn {
+    padding: 7px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    transition: all 0.18s;
+  }
+  .cur-btn.active {
+    background: white;
+    color: #1F3864;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.18);
+  }
+  .rate-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    justify-content: flex-end;
+  }
+  .rate-label { font-size: 12px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+  .rate-input {
+    width: 80px;
+    height: 36px;
+    border: 1.5px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    outline: none;
+    -webkit-appearance: none;
+  }
+  .rate-input:focus { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.2); }
+  .rate-unit { font-size: 12px; color: rgba(255,255,255,0.7); white-space: nowrap; }
+
+  /* ── 공통 ────────────────────────────────────────────── */
   .container { padding: 16px; max-width: 480px; margin: 0 auto; }
 
   .card {
@@ -46,273 +101,144 @@
     margin-bottom: 14px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.07);
   }
-
   .card-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: #2E75B6;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
+    font-size: 13px; font-weight: 700; color: #2E75B6;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 6px;
   }
   .card-title::before {
-    content: '';
-    display: block;
-    width: 4px;
-    height: 16px;
-    background: #2E75B6;
-    border-radius: 2px;
+    content: ''; display: block; width: 4px; height: 16px;
+    background: #2E75B6; border-radius: 2px;
   }
 
   .field { margin-bottom: 14px; }
   .field:last-child { margin-bottom: 0; }
-  .field label {
-    display: block;
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 6px;
-    font-weight: 500;
-  }
+  .field label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 500; }
 
   .input-row { display: flex; gap: 10px; }
   .input-row .field { flex: 1; }
 
   input[type="number"] {
-    width: 100%;
-    height: 52px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    font-size: 22px;
-    font-weight: 700;
-    text-align: center;
-    color: #1a2a3a;
-    background: #f8fafc;
-    outline: none;
-    transition: border-color 0.2s, background 0.2s;
-    -webkit-appearance: none;
+    width: 100%; height: 52px;
+    border: 2px solid #e2e8f0; border-radius: 12px;
+    font-size: 22px; font-weight: 700; text-align: center;
+    color: #1a2a3a; background: #f8fafc; outline: none;
+    transition: border-color 0.2s, background 0.2s; -webkit-appearance: none;
   }
-  input[type="number"]:focus {
-    border-color: #2E75B6;
-    background: #EEF4FF;
-  }
+  input[type="number"]:focus { border-color: #2E75B6; background: #EEF4FF; }
 
   .qty-control {
-    display: flex;
-    align-items: center;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f8fafc;
-    height: 52px;
+    display: flex; align-items: center;
+    border: 2px solid #e2e8f0; border-radius: 12px;
+    overflow: hidden; background: #f8fafc; height: 52px;
   }
   .qty-btn {
-    width: 52px;
-    height: 100%;
-    font-size: 24px;
-    font-weight: 300;
-    color: #2E75B6;
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s;
+    width: 52px; height: 100%; font-size: 24px; font-weight: 300;
+    color: #2E75B6; background: none; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s;
   }
   .qty-btn:active { background: #dbeafe; }
-  .qty-val {
-    flex: 1;
-    text-align: center;
-    font-size: 22px;
-    font-weight: 700;
-    color: #1a2a3a;
-  }
+  .qty-val { flex: 1; text-align: center; font-size: 22px; font-weight: 700; color: #1a2a3a; }
 
   .area-display {
     background: linear-gradient(135deg, #EEF4FF, #dbeafe);
-    border-radius: 12px;
-    padding: 14px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 14px;
+    border-radius: 12px; padding: 14px 16px;
+    display: flex; justify-content: space-between; align-items: center; margin-top: 14px;
   }
   .area-display .label { font-size: 13px; color: #555; font-weight: 500; }
   .area-display .value { font-size: 24px; font-weight: 800; color: #1F3864; }
-  .area-display .unit { font-size: 13px; color: #2E75B6; font-weight: 600; }
+  .area-display .unit  { font-size: 13px; color: #2E75B6; font-weight: 600; }
+
+  .area-warning {
+    display: none; margin-top: 10px;
+    background: #fff0f0; border: 1.5px solid #ffb3b3;
+    border-radius: 10px; padding: 10px 14px; font-size: 13px; line-height: 1.5;
+  }
+  .area-warning.show { display: block; }
+  .area-warning .warn-red { color: #d32f2f; font-weight: 800; }
 
   .result-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 0;
-    border-bottom: 1px solid #f0f0f0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 0; border-bottom: 1px solid #f0f0f0;
   }
   .result-item:last-child { border-bottom: none; }
-  .result-item .name { font-size: 14px; color: #333; flex: 1; }
-  .result-item .sub { font-size: 11px; color: #999; margin-top: 2px; }
+  .result-item .name   { font-size: 14px; color: #333; flex: 1; }
+  .result-item .sub    { font-size: 11px; color: #999; margin-top: 2px; }
   .result-item .amount { font-size: 17px; font-weight: 700; color: #1a2a3a; margin-left: 10px; }
 
   .total-card {
     background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
-    border-radius: 16px;
-    padding: 22px 20px;
-    margin-bottom: 14px;
+    border-radius: 16px; padding: 22px 20px; margin-bottom: 14px;
     box-shadow: 0 4px 20px rgba(31,56,100,0.35);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
   }
-  .total-card .label { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.85); }
+  .total-card .label  { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.85); }
   .total-card .amount { font-size: 30px; font-weight: 800; color: white; }
 
   /* 앱 설치 배너 */
   #installBanner {
-    display: none;
-    background: linear-gradient(135deg, #0f5132, #198754);
-    border-radius: 16px;
-    padding: 16px 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 16px rgba(25,135,84,0.3);
-    align-items: center;
-    gap: 14px;
+    display: none; background: linear-gradient(135deg, #0f5132, #198754);
+    border-radius: 16px; padding: 16px 20px; margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(25,135,84,0.3); align-items: center; gap: 14px;
   }
   #installBanner.show { display: flex; }
   #installBanner .text { flex: 1; color: white; }
   #installBanner .text strong { display: block; font-size: 14px; margin-bottom: 2px; }
-  #installBanner .text span { font-size: 12px; opacity: 0.85; }
+  #installBanner .text span   { font-size: 12px; opacity: 0.85; }
   #installBtn {
-    background: white;
-    color: #198754;
-    border: none;
-    border-radius: 10px;
-    padding: 10px 16px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    white-space: nowrap;
-    flex-shrink: 0;
+    background: white; color: #198754; border: none; border-radius: 10px;
+    padding: 10px 16px; font-size: 13px; font-weight: 700;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
   }
   #installBtn:active { opacity: 0.8; }
 
+  /* 마진율 + 제안가격 */
+  .margin-card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); }
+  .margin-row  { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .margin-row label { font-size: 14px; color: #333; font-weight: 500; white-space: nowrap; }
+  .margin-input-wrap {
+    display: flex; align-items: center; border: 2px solid #e2e8f0;
+    border-radius: 12px; overflow: hidden; background: #f8fafc; height: 48px; flex: 1;
+  }
+  .margin-input-wrap:focus-within { border-color: #2E75B6; background: #EEF4FF; }
+  .margin-input-wrap input {
+    flex: 1; height: 100%; border: none; background: none;
+    font-size: 20px; font-weight: 700; text-align: center;
+    color: #1a2a3a; outline: none; -webkit-appearance: none;
+  }
+  .margin-input-wrap span { padding-right: 12px; font-size: 16px; font-weight: 600; color: #2E75B6; }
+
+  .suggest-row {
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+    border-radius: 12px; padding: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .suggest-row .label  { font-size: 14px; font-weight: 600; color: #2e7d32; }
+  .suggest-row .sub    { font-size: 11px; color: #558b2f; margin-top: 2px; }
+  .suggest-row .amount { font-size: 26px; font-weight: 800; color: #1b5e20; }
+
+  /* 단가 참고표 */
   .toggle-btn {
-    width: 100%;
-    background: white;
-    border: none;
-    border-radius: 16px;
-    padding: 16px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #2E75B6;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 14px;
-    transition: background 0.15s;
+    width: 100%; background: white; border: none; border-radius: 16px;
+    padding: 16px 20px; font-size: 14px; font-weight: 600; color: #2E75B6;
+    cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; transition: background 0.15s;
   }
   .toggle-btn:active { background: #f0f4f8; }
   .toggle-icon { font-size: 18px; transition: transform 0.2s; }
   .toggle-icon.open { transform: rotate(180deg); }
-
   .price-table { display: none; }
   .price-table.open { display: block; }
   .price-table .card { margin-top: -8px; border-radius: 0 0 16px 16px; padding-top: 12px; }
-
-  .pt-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 9px 0;
-    border-bottom: 1px solid #f5f5f5;
-    font-size: 13px;
-  }
+  .pt-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
   .pt-row:last-child { border-bottom: none; }
   .pt-row .range { color: #555; }
   .pt-row .price { font-weight: 700; color: #2E75B6; }
   .pt-row.highlight { background: #FFF9C4; border-radius: 6px; padding: 9px 8px; margin: 0 -8px; }
 
-  .note {
-    font-size: 11.5px;
-    color: #888;
-    text-align: center;
-    margin-top: 6px;
-    line-height: 1.6;
-  }
-
-  /* 면적 경고 */
-  .area-warning {
-    display: none;
-    margin-top: 10px;
-    background: #fff0f0;
-    border: 1.5px solid #ffb3b3;
-    border-radius: 10px;
-    padding: 10px 14px;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-  .area-warning.show { display: block; }
-  .area-warning .warn-red { color: #d32f2f; font-weight: 800; }
-
-  /* 마진율 + 제안가격 */
-  .margin-card {
-    background: white;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-  }
-  .margin-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .margin-row label { font-size: 14px; color: #333; font-weight: 500; white-space: nowrap; }
-  .margin-input-wrap {
-    display: flex;
-    align-items: center;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f8fafc;
-    height: 48px;
-    flex: 1;
-  }
-  .margin-input-wrap:focus-within { border-color: #2E75B6; background: #EEF4FF; }
-  .margin-input-wrap input {
-    flex: 1;
-    height: 100%;
-    border: none;
-    background: none;
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-    color: #1a2a3a;
-    outline: none;
-    -webkit-appearance: none;
-  }
-  .margin-input-wrap span {
-    padding-right: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #2E75B6;
-  }
-  .suggest-row {
-    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
-    border-radius: 12px;
-    padding: 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .suggest-row .label { font-size: 14px; font-weight: 600; color: #2e7d32; }
-  .suggest-row .sub { font-size: 11px; color: #558b2f; margin-top: 2px; }
-  .suggest-row .amount { font-size: 26px; font-weight: 800; color: #1b5e20; }
+  .note { font-size: 11.5px; color: #888; text-align: center; margin-top: 6px; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -320,6 +246,19 @@
 <div class="header">
   <h1>🪟 Zemismart<br>스마트 전동 롤스크린 견적 계산기</h1>
   <p>통화 단위 : USD · 국제 배송비 별도</p>
+</div>
+
+<!-- 통화 · 환율 설정 바 -->
+<div class="currency-bar">
+  <div class="cur-toggle">
+    <button id="btnUSD" class="cur-btn active" onclick="setCurrency('USD')">$ USD</button>
+    <button id="btnKRW" class="cur-btn"        onclick="setCurrency('KRW')">₩ KRW</button>
+  </div>
+  <div class="rate-wrap">
+    <span class="rate-label">환율</span>
+    <input class="rate-input" type="number" id="exRate" value="1600" min="1" step="10" inputmode="numeric" oninput="calc()">
+    <span class="rate-unit">원/$</span>
+  </div>
 </div>
 
 <div class="container">
@@ -382,30 +321,30 @@
     <div class="result-item">
       <div>
         <div class="name">Zigbee 유선 모터 ZM25Z</div>
-        <div class="sub" id="motorSub">1대 × $39.00</div>
+        <div class="sub" id="motorSub"></div>
       </div>
-      <div class="amount" id="motorAmt">$39.00</div>
+      <div class="amount" id="motorAmt"></div>
     </div>
     <div class="result-item">
       <div>
         <div class="name">16채널 다이얼 리모컨 ZMR16</div>
-        <div class="sub" id="remoteSub">1개 × $11.00</div>
+        <div class="sub" id="remoteSub"></div>
       </div>
-      <div class="amount" id="remoteAmt">$11.00</div>
+      <div class="amount" id="remoteAmt"></div>
     </div>
     <div class="result-item">
       <div>
         <div class="name">블라인드 원단 (맞춤 제작)</div>
-        <div class="sub" id="fabricSub">1.50㎡ × $17.00/㎡</div>
+        <div class="sub" id="fabricSub"></div>
       </div>
-      <div class="amount" id="fabricAmt">$25.50</div>
+      <div class="amount" id="fabricAmt"></div>
     </div>
   </div>
 
   <!-- 총합계 -->
   <div class="total-card">
     <span class="label">총 합계</span>
-    <span class="amount" id="totalAmt">$75.50</span>
+    <span class="amount" id="totalAmt"></span>
   </div>
 
   <!-- 마진율 + 제안가격 -->
@@ -413,16 +352,16 @@
     <div class="margin-row">
       <label>마진율</label>
       <div class="margin-input-wrap">
-        <input type="number" id="margin" value="25" min="0" max="99" step="1" inputmode="numeric" oninput="calc()">
+        <input type="number" id="margin" value="30" min="0" max="99" step="1" inputmode="numeric" oninput="calc()">
         <span>%</span>
       </div>
     </div>
     <div class="suggest-row">
       <div>
         <div class="label">제안 가격</div>
-        <div class="sub" id="suggestSub">마진 25% 적용</div>
+        <div class="sub" id="suggestSub"></div>
       </div>
-      <div class="amount" id="suggestAmt">$94.38</div>
+      <div class="amount" id="suggestAmt"></div>
     </div>
   </div>
 
@@ -441,7 +380,7 @@
 </div>
 
 <script>
-const MOTOR_PRICE = 39;
+const MOTOR_PRICE  = 39;
 const REMOTE_PRICE = 11;
 
 const AREA_TIERS = [
@@ -470,88 +409,57 @@ const TIER_LABELS = [
 ];
 
 let motorQty = 1, remoteQty = 1;
+let currency = 'USD';
 let deferredPrompt = null;
 
-// PWA 설치 프롬프트 캐치
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  document.getElementById('installBanner').classList.add('show');
-});
+// ── 통화 포맷터 ──────────────────────────────────────────
+function getRate() { return parseFloat(document.getElementById('exRate').value) || 1600; }
 
-// 설치 완료 후 배너 숨김
-window.addEventListener('appinstalled', () => {
-  document.getElementById('installBanner').classList.remove('show');
-  deferredPrompt = null;
-});
-
-async function installApp() {
-  if (!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const { outcome } = await deferredPrompt.userChoice;
-  if (outcome === 'accepted') {
-    document.getElementById('installBanner').classList.remove('show');
+function fmt(usd) {
+  if (currency === 'KRW') {
+    const krw = Math.round(usd * getRate());
+    return '₩' + krw.toLocaleString('ko-KR');
   }
-  deferredPrompt = null;
+  return '$' + usd.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-// Service Worker 등록 (오프라인 지원)
-if ('serviceWorker' in navigator) {
-  const swCode = `
-    const CACHE = 'zemismart-v1';
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
-      self.skipWaiting();
-    });
-    self.addEventListener('activate', e => {
-      e.waitUntil(caches.keys().then(keys =>
-        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-      ));
-      self.clients.claim();
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-    });
-  `;
-  const blob = new Blob([swCode], { type: 'application/javascript' });
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+function fmtUnit(usd) {
+  if (currency === 'KRW') {
+    return '₩' + Math.round(usd * getRate()).toLocaleString('ko-KR') + '/㎡';
+  }
+  return '$' + usd.toFixed(2) + '/㎡';
 }
 
-function getUnitPrice(area) {
-  return AREA_TIERS.find(t => area <= t.max).price;
+function setCurrency(c) {
+  currency = c;
+  document.getElementById('btnUSD').classList.toggle('active', c === 'USD');
+  document.getElementById('btnKRW').classList.toggle('active', c === 'KRW');
+  calc();
 }
 
-function fmt(n) {
-  return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
+// ── 계산 ─────────────────────────────────────────────────
 function calc() {
-  const w = parseFloat(document.getElementById('width').value) || 0;
-  const h = parseFloat(document.getElementById('height').value) || 0;
-  const area = w * h;
+  const w      = parseFloat(document.getElementById('width').value)  || 0;
+  const h      = parseFloat(document.getElementById('height').value) || 0;
+  const area   = w * h;
   const margin = parseFloat(document.getElementById('margin').value) || 0;
 
   // 면적 경고
-  const warning = document.getElementById('areaWarning');
-  if (area > 7.5) {
-    warning.classList.add('show');
-  } else {
-    warning.classList.remove('show');
-  }
+  document.getElementById('areaWarning').classList.toggle('show', area > 7.5);
 
-  const unitPrice = getUnitPrice(area);
+  const unitPrice = AREA_TIERS.find(t => area <= t.max).price;
   const motorAmt  = motorQty  * MOTOR_PRICE;
   const remoteAmt = remoteQty * REMOTE_PRICE;
   const fabricAmt = area * unitPrice;
-  const total = motorAmt + remoteAmt + fabricAmt;
-  const suggest = total * (1 + margin / 100);
+  const total     = motorAmt + remoteAmt + fabricAmt;
+  const suggest   = total * (1 + margin / 100);
 
   document.getElementById('areaVal').textContent    = area.toFixed(2);
   document.getElementById('motorSub').textContent   = motorQty  + '대 × ' + fmt(MOTOR_PRICE);
   document.getElementById('motorAmt').textContent   = fmt(motorAmt);
   document.getElementById('remoteSub').textContent  = remoteQty + '개 × ' + fmt(REMOTE_PRICE);
   document.getElementById('remoteAmt').textContent  = fmt(remoteAmt);
-  document.getElementById('fabricSub').textContent  = area.toFixed(2) + '㎡ × ' + fmt(unitPrice) + '/㎡';
+  document.getElementById('fabricSub').textContent  = area.toFixed(2) + '㎡ × ' + fmtUnit(unitPrice);
   document.getElementById('fabricAmt').textContent  = fmt(fabricAmt);
   document.getElementById('totalAmt').textContent   = fmt(total);
   document.getElementById('suggestSub').textContent = '마진 ' + margin + '% 적용';
@@ -577,7 +485,7 @@ function renderPriceTable(currentArea) {
     const active = i === currentIdx;
     return `<div class="pt-row${active ? ' highlight' : ''}">
       <span class="range">${active ? '▶ ' : ''}${TIER_LABELS[i]}</span>
-      <span class="price">${fmt(t.price)}/㎡</span>
+      <span class="price">${fmtUnit(t.price)}</span>
     </div>`;
   });
   document.getElementById('priceRows').innerHTML = rows.join('');
@@ -586,8 +494,46 @@ function renderPriceTable(currentArea) {
 function toggleTable() {
   const table = document.getElementById('priceTable');
   const icon  = document.getElementById('toggleIcon');
-  const open  = table.classList.toggle('open');
-  icon.classList.toggle('open', open);
+  icon.classList.toggle('open', table.classList.toggle('open'));
+}
+
+// ── PWA ──────────────────────────────────────────────────
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBanner').classList.add('show');
+});
+window.addEventListener('appinstalled', () => {
+  document.getElementById('installBanner').classList.remove('show');
+  deferredPrompt = null;
+});
+async function installApp() {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') document.getElementById('installBanner').classList.remove('show');
+  deferredPrompt = null;
+}
+
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'zemismart-v2';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/'])));
+      self.skipWaiting();
+    });
+    self.addEventListener('activate', e => {
+      e.waitUntil(caches.keys().then(keys =>
+        Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+      ));
+      self.clients.claim();
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
 }
 
 calc();
